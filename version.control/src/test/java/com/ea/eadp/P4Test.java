@@ -12,7 +12,7 @@ import java.util.*;
 /**
  * Created by chriskang on 12/27/2016.
  */
-public class AppTest {
+public class P4Test {
     @Test
     public void testP4ChangeInfo() {
         final String info = "Change 313596 on 2016/08/22 by EASAP\\chriskang@EASAP_chriskang_ws5 'change on p4: revision 6 '";

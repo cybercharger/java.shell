@@ -14,8 +14,8 @@ class P4Modify {
         delete
     }
 
-    private static final String CMD_FMT = "p4 %3$s -c %1$s %2$s";
-    private static final String X_CMD_FMT = "%1$s -c %2$s";
+    private static final String CMD_FMT = Utils.getArgFormat("p4 %3$s -c %1$s %2$s");
+    private static final String X_CMD_FMT = Utils.getArgFormat("%1$s -c %2$s");
 
     public static void run(ModifyAction action, String file, String changelist) {
         if (action == null) throw new NullPointerException("action");

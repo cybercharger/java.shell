@@ -10,6 +10,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.*;
@@ -23,6 +24,7 @@ public class Utils {
     private static final Logger logger = Logger.getLogger(Utils.class);
     private static final String[] EMPTY_STRING_ARRAY = new String[0];
     private static final String ARG_DELIMITER = "${delimiter}";
+    private static final String ARG_DELIMITER_REGEX = "\\$\\{delimiter\\}";
 
     public static boolean isValidGitCommitId(String commitId) {
         return !StringUtils.isBlank(commitId) &&
@@ -103,7 +105,7 @@ public class Utils {
 
     public static String[] convertToArgArray(String args) {
         if (StringUtils.isBlank(args)) throw new NullPointerException("args");
-        return StringUtils.split(args, ARG_DELIMITER);
+        return Arrays.stream(args.split(ARG_DELIMITER_REGEX)).filter(s -> StringUtils.isNotBlank(s.trim())).toArray(String[]::new);
     }
 
     public static String getArgFormat(String argFormat) {
