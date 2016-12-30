@@ -46,7 +46,7 @@ public class AppTest {
         }
     }
 
-    @Test
+//    @Test
     public void testP4Login() throws InterruptedException, ExecutionException, IOException {
         String input = "User@123";
         List<String> res = CommandRunner.runCommand(new String[]{"p4", "-s", "-ZTag", "login"}, input, null,
@@ -56,14 +56,14 @@ public class AppTest {
     }
 
 
-    @Test
+//    @Test
     public void testP4LoginS() throws InterruptedException, ExecutionException, IOException {
         List<String> res = CommandRunner.runCommand(new String[]{"p4", "login", "-s"}, null, null, (c, output) -> {
         });
         res.forEach(logger::info);
     }
 
-    @Test
+//    @Test
     public void testP4Submit() throws InterruptedException, ExecutionException, IOException {
         List<String> res = CommandRunner.runCommand(new String[]{"p4", "-s", "-ZTag", "submit", "-c", "319189"}, null, null, (c, output) -> {
             logger.error("STDERR:\n" + StringUtils.join(output, "\n"));

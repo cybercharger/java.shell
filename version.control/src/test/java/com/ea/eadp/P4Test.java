@@ -15,8 +15,8 @@ import java.util.concurrent.ExecutionException;
 /**
  * Created by chriskang on 12/27/2016.
  */
-public class AppTest {
-    private static Logger logger = Logger.getLogger(AppTest.class);
+public class P4Test {
+    private static Logger logger = Logger.getLogger(P4Test.class);
 
     @Test
     public void testP4ChangeInfo() {
@@ -279,7 +279,7 @@ public class AppTest {
     }
 
 
-    @Test
+//    @Test
     public void testCreateP4ChangeList() throws InterruptedException, ExecutionException, IOException {
         String input = "Change: new\n" +
                 "\n" +
@@ -299,7 +299,7 @@ public class AppTest {
                 (err) -> logger.error(String.format("Failed on %1$s %2$s, error:\n%3$s", StringUtils.join(cmd, " "), input, StringUtils.join(err, "\n"))));
     }
 
-    @Test
+//    @Test
     public void testP4Login() throws InterruptedException, ExecutionException, IOException {
         String input = "User@123";
         P4SCmdRunner.run(new String[]{"-ZTag", "login"}, input, null,
@@ -308,21 +308,21 @@ public class AppTest {
     }
 
 
-    @Test
+//    @Test
     public void testP4LoginS() throws InterruptedException, ExecutionException, IOException {
         P4SCmdRunner.run(new String[]{"login", "-s"}, null, null,
                 c -> logger.info("S: " + StringUtils.join(c, "\n")),
                 e -> logger.info("F: " + StringUtils.join(e, "\n")));
     }
 
-    @Test
+//    @Test
     public void testP4Logout() throws InterruptedException, ExecutionException, IOException {
         P4SCmdRunner.run(new String[]{"logout"}, null, null,
                 c -> logger.info("S: " + StringUtils.join(c, "\n")),
                 e -> logger.info("F: " + StringUtils.join(e, "\n")));
     }
 
-    @Test
+//    @Test
     public void testP4Submit() throws InterruptedException, ExecutionException, IOException {
         List<String> res = CommandRunner.runCommand(new String[]{"p4", "-s", "-ZTag", "submit", "-c", "319189"}, null, null, (c, output) -> {
             logger.error("STDERR:\n" + StringUtils.join(output, "\n"));

@@ -35,4 +35,24 @@ public class UtilsTest {
             Assert.assertEquals(String.format("file: %1$s", entry.getKey()), expected, Utils.collectionContains(pattern, entry.getKey()::startsWith));
         }
     }
+
+    @Test
+    public void testUtilsFormatArgsConvertToArgArray() {
+        String cmdFmt = "p4 -zTag %1$s@=%2$s -x  %3$s";
+        String cmdFmtExp = "p4${delimiter}-zTag${delimiter}%1$s@=%2$s${delimiter}-x${delimiter}${delimiter}%3$s";
+        Assert.assertEquals(cmdFmtExp, Utils.getArgFormat(cmdFmt));
+        String depotPath = "//nucleus something/NNG/...";
+        String cl = "318568";
+        String xFile = "tmp file.tmp";
+        String[] argArrayExp = new String[]{"p4", "-zTag", depotPath + "@=" + cl, "-x", xFile};
+        Assert.assertArrayEquals(argArrayExp, Utils.convertToArgArray(String.format(cmdFmtExp, depotPath, cl, xFile)));
+
+        cmdFmt = Utils.getArgFormat("p4 -x %1$s %2$s");
+        String xCmdFmt = Utils.getArgFormat("%1$s -c %2$s");
+        String opt = "edit";
+        argArrayExp = new String[]{"p4", "-x", xFile, opt, "-c", cl};
+        String cmd = String.format(xCmdFmt, opt, cl);
+        cmd = String.format(cmdFmt, xFile, cmd);
+        Assert.assertArrayEquals(argArrayExp, Utils.convertToArgArray(cmd));
+    }
 }
