@@ -1,18 +1,23 @@
 package com.ea.eadp;
 
+import com.ea.eadp.common.P4SCmdRunner;
 import com.ea.eadp.common.VersionControlException;
 import com.ea.eadp.p4.*;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Created by chriskang on 12/27/2016.
  */
 public class AppTest {
+    private static Logger logger = Logger.getLogger(AppTest.class);
+
     @Test
     public void testP4ChangeInfo() {
         final String info = "Change 313596 on 2016/08/22 by EASAP\\chriskang@EASAP_chriskang_ws5 'change on p4: revision 6 '";
@@ -271,5 +276,57 @@ public class AppTest {
             exp = e;
         }
         Assert.assertNotNull(exp);
+    }
+
+
+    @Test
+    public void testCreateP4ChangeList() throws InterruptedException, ExecutionException, IOException {
+        String input = "Change: new\n" +
+                "\n" +
+                "Client: EASAP_chriskang_EASHDPDESK075_70\n" +
+                "\n" +
+                "User:   EASAP\\chriskang\n" +
+                "\n" +
+                "Status: new\n" +
+                "\n" +
+                "Description: something comments with whitespaces\n" +
+                "\tsome more new lines #1\n" +
+                "\tsome more new lines #2\n";
+
+        final String[] cmd = new String[]{"-Ztag", "change", "-i"};
+        P4SCmdRunner.run(cmd, input, null,
+                (res) -> logger.info("STDOUT:\n" + StringUtils.join(res, "\n")),
+                (err) -> logger.error(String.format("Failed on %1$s %2$s, error:\n%3$s", StringUtils.join(cmd, " "), input, StringUtils.join(err, "\n"))));
+    }
+
+    @Test
+    public void testP4Login() throws InterruptedException, ExecutionException, IOException {
+        String input = "User@123";
+        P4SCmdRunner.run(new String[]{"-ZTag", "login"}, input, null,
+                res -> logger.info("STDOUT:\n" + StringUtils.join(res, "\n")),
+                err -> logger.error("STDERR:\n" + StringUtils.join(err, "\n")));
+    }
+
+
+    @Test
+    public void testP4LoginS() throws InterruptedException, ExecutionException, IOException {
+        P4SCmdRunner.run(new String[]{"login", "-s"}, null, null,
+                c -> logger.info("S: " + StringUtils.join(c, "\n")),
+                e -> logger.info("F: " + StringUtils.join(e, "\n")));
+    }
+
+    @Test
+    public void testP4Logout() throws InterruptedException, ExecutionException, IOException {
+        P4SCmdRunner.run(new String[]{"logout"}, null, null,
+                c -> logger.info("S: " + StringUtils.join(c, "\n")),
+                e -> logger.info("F: " + StringUtils.join(e, "\n")));
+    }
+
+    @Test
+    public void testP4Submit() throws InterruptedException, ExecutionException, IOException {
+        List<String> res = CommandRunner.runCommand(new String[]{"p4", "-s", "-ZTag", "submit", "-c", "319189"}, null, null, (c, output) -> {
+            logger.error("STDERR:\n" + StringUtils.join(output, "\n"));
+        });
+        logger.info("STDINPUT:\n" + StringUtils.join(res, "\n"));
     }
 }

@@ -23,7 +23,7 @@ public class AppTest {
         }
     }
 
-//    @Test
+    @Test
     public void testCreateP4ChangeList() throws InterruptedException, ExecutionException, IOException {
         String input = "Change: new\n" +
                 "\n" +
@@ -38,7 +38,7 @@ public class AppTest {
                 "\tsome more new lines #2\n";
 
         try {
-            List<String> p4 = CommandRunner.runCommand(new String[] {"p4", "change", "-i"}, input, null, (c, res) ->
+            List<String> p4 = CommandRunner.runCommand(new String[]{"p4", "-s", "-Ztag", "change", "-i"}, input, null, (c, res) ->
                     logger.error(String.format("Failed on %1$s %2$s, error:\n%3$s", StringUtils.join(c, " "), input, StringUtils.join(res, "\n"))));
             p4.forEach(logger::info);
         } catch (IOException | InterruptedException | ExecutionException e) {
@@ -46,4 +46,27 @@ public class AppTest {
         }
     }
 
-}
+    @Test
+    public void testP4Login() throws InterruptedException, ExecutionException, IOException {
+        String input = "User@123";
+        List<String> res = CommandRunner.runCommand(new String[]{"p4", "-s", "-ZTag", "login"}, input, null,
+                (c, output) -> logger.error("STDERR:\n" + StringUtils.join(output, "\n")));
+        logger.info("STDOUT:");
+        res.forEach(logger::info);
+    }
+
+
+    @Test
+    public void testP4LoginS() throws InterruptedException, ExecutionException, IOException {
+        List<String> res = CommandRunner.runCommand(new String[]{"p4", "login", "-s"}, null, null, (c, output) -> {
+        });
+        res.forEach(logger::info);
+    }
+
+    @Test
+    public void testP4Submit() throws InterruptedException, ExecutionException, IOException {
+        List<String> res = CommandRunner.runCommand(new String[]{"p4", "-s", "-ZTag", "submit", "-c", "319189"}, null, null, (c, output) -> {
+            logger.error("STDERR:\n" + StringUtils.join(output, "\n"));
+        });
+        logger.info("STDINPUT:\n" + StringUtils.join(res, "\n"));
+    }}
