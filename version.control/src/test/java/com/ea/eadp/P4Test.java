@@ -312,21 +312,20 @@ public class P4Test {
     public void testP4LoginS() throws InterruptedException, ExecutionException, IOException {
         P4SCmdRunner.run(new String[]{"login", "-s"}, null, null,
                 c -> logger.info("S: " + StringUtils.join(c, "\n")),
-                e -> logger.info("F: " + StringUtils.join(e, "\n")));
+                e -> logger.error("F: " + StringUtils.join(e, "\n")));
     }
 
 //    @Test
     public void testP4Logout() throws InterruptedException, ExecutionException, IOException {
         P4SCmdRunner.run(new String[]{"logout"}, null, null,
                 c -> logger.info("S: " + StringUtils.join(c, "\n")),
-                e -> logger.info("F: " + StringUtils.join(e, "\n")));
+                e -> logger.error("F: " + StringUtils.join(e, "\n")));
     }
 
-//    @Test
+    @Test
     public void testP4Submit() throws InterruptedException, ExecutionException, IOException {
-        List<String> res = CommandRunner.runCommand(new String[]{"p4", "-s", "-ZTag", "submit", "-c", "319189"}, null, null, (c, output) -> {
-            logger.error("STDERR:\n" + StringUtils.join(output, "\n"));
-        });
-        logger.info("STDINPUT:\n" + StringUtils.join(res, "\n"));
+        boolean res = P4SCmdRunner.run(new String[]{"-ZTag", "submit", "-c", "319189"}, null, null,
+                c -> logger.info("S: " + StringUtils.join(c, "\n")),
+                e -> logger.error("F: " + StringUtils.join(e, "\n")));
     }
 }

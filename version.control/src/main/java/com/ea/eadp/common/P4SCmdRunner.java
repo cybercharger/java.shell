@@ -6,7 +6,6 @@ import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
@@ -19,14 +18,9 @@ import java.util.regex.Pattern;
 public class P4SCmdRunner {
     private static Logger logger = Logger.getLogger(P4SCmdRunner.class);
 
-    private static final String infoId = "info";
-    private static final String infPatternString = String.format("info\\d*\\:\\s+(?<%s>.+)", infoId);
-    private static final Pattern infoPattern = Pattern.compile(infPatternString);
-
-    private static final String errorId = "error";
-    private static final String errorPatternString = String.format("error\\d*\\:\\s+(?<%s>.+)", errorId);
-    private static final Pattern errorPattern = Pattern.compile(errorPatternString);
-
+    private static final String contentId = "content";
+    private static final String contentPatternString = String.format("(info|error)\\d*\\:\\s+(?<%s>.+)", contentId);
+    private static final Pattern contentPattern = Pattern.compile(contentPatternString);
 
     private static final String exitId = "exit";
     private static final String exitPatternString = String.format("exit\\d*\\:\\s+(?<%s>\\d+)", exitId);
@@ -55,7 +49,7 @@ public class P4SCmdRunner {
 
         List<String> output = new ArrayList<>(result.size());
         result.forEach(line -> {
-            String l = succeeded ? parseResult(infoPattern, line, infoId, false) : parseResult(errorPattern, line, errorId, false);
+            String l = parseResult(contentPattern, line, contentId, false);
             if (!StringUtils.isBlank(l)) {
                 output.add(l);
             }
