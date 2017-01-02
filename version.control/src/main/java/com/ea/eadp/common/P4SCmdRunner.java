@@ -19,7 +19,7 @@ public class P4SCmdRunner {
     private static Logger logger = Logger.getLogger(P4SCmdRunner.class);
 
     private static final String contentId = "content";
-    private static final String contentPatternString = String.format("(info|error)\\d*\\:\\s+(?<%s>.+)", contentId);
+    private static final String contentPatternString = String.format("(text|info|error)\\d*\\:\\s+(?<%s>.+)", contentId);
     private static final Pattern contentPattern = Pattern.compile(contentPatternString);
 
     private static final String exitId = "exit";

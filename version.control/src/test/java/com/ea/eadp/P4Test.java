@@ -9,7 +9,8 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -279,7 +280,7 @@ public class P4Test {
     }
 
 
-//    @Test
+    //    @Test
     public void testCreateP4ChangeList() throws InterruptedException, ExecutionException, IOException {
         String input = "Change: new\n" +
                 "\n" +
@@ -299,7 +300,7 @@ public class P4Test {
                 (err) -> logger.error(String.format("Failed on %1$s %2$s, error:\n%3$s", StringUtils.join(cmd, " "), input, StringUtils.join(err, "\n"))));
     }
 
-//    @Test
+    //    @Test
     public void testP4Login() throws InterruptedException, ExecutionException, IOException {
         String input = "User@123";
         P4SCmdRunner.run(new String[]{"-ZTag", "login"}, input, null,
@@ -308,24 +309,68 @@ public class P4Test {
     }
 
 
-//    @Test
+    //    @Test
     public void testP4LoginS() throws InterruptedException, ExecutionException, IOException {
         P4SCmdRunner.run(new String[]{"login", "-s"}, null, null,
                 c -> logger.info("S: " + StringUtils.join(c, "\n")),
                 e -> logger.error("F: " + StringUtils.join(e, "\n")));
     }
 
-//    @Test
+    //    @Test
     public void testP4Logout() throws InterruptedException, ExecutionException, IOException {
         P4SCmdRunner.run(new String[]{"logout"}, null, null,
                 c -> logger.info("S: " + StringUtils.join(c, "\n")),
                 e -> logger.error("F: " + StringUtils.join(e, "\n")));
     }
 
-    @Test
+    //    @Test
     public void testP4Submit() throws InterruptedException, ExecutionException, IOException {
         boolean res = P4SCmdRunner.run(new String[]{"-ZTag", "submit", "-c", "319189"}, null, null,
                 c -> logger.info("S: " + StringUtils.join(c, "\n")),
                 e -> logger.error("F: " + StringUtils.join(e, "\n")));
+    }
+
+    @Test
+    public void testP4ChangeListData() throws InterruptedException, ExecutionException, IOException {
+        String des =
+                "desc line 1\n" +
+                "desc line 2\n" +
+                "desc line 3\n" +
+                "Bug fixing for [EADPCOMMERCEBUG-00000], [EADPCOMMERCEBUG-23456]\n" +
+                "GOPFRs are : 1) [GOPFR-00000], 2) [GOPFR-00001]\n" +
+                "Type public";
+        String output = "" +
+                "# A Perforce Change Specification.\n" +
+                "#\n" +
+                "#  Change:      The change number. 'new' on a new changelist.\n" +
+                "#  Date:        The date this specification was last modified.\n" +
+                "#  Client:      The client on which the changelist was created.  Read-only.\n" +
+                "#  User:        The user who created the changelist.\n" +
+                "#  Status:      Either 'pending' or 'submitted'. Read-only.\n" +
+                "#  Type:        Either 'public' or 'restricted'. Default is 'public'.\n" +
+                "#  Description: Comments about the changelist.  Required.\n" +
+                "#  Jobs:        What opened jobs are to be closed by this changelist.\n" +
+                "#               You may delete jobs from this list.  (New changelists only.)\n" +
+                "#  Files:       What opened files from the default changelist are to be added\n" +
+                "#               to this changelist.  You may delete files from this list.\n" +
+                "#               (New changelists only.)\n" +
+                "Change:\t319197\n" +
+                "Date:\t2016/12/30 21:45:14\n" +
+                "Client:\tchriskang_EASHDPNOTE143_6975\n" +
+                "User:\tEASAP\\chriskang\n" +
+                "Status:\tpending\n" +
+                "Description:\n" +
+                des;
+        List<String> rawData = Arrays.asList(output.split("\n"));
+        P4ChangeListData data = new P4ChangeListData(rawData);
+        Assert.assertEquals(319197, data.getChangelist());
+        Assert.assertEquals("2016/12/30 21:45:14", data.getDate());
+        Assert.assertEquals("chriskang_EASHDPNOTE143_6975", data.getClient());
+        Assert.assertEquals("EASAP\\chriskang", data.getUser());
+        Assert.assertEquals("pending", data.getStatus());
+        Assert.assertEquals(des, data.getDescription());
+
+        String[] bugs = new String[] {"[EADPCOMMERCEBUG-00000]", "[EADPCOMMERCEBUG-23456]","[GOPFR-00000]", "[GOPFR-00001]"};
+        Assert.assertArrayEquals(bugs, data.getBugs());
     }
 }
