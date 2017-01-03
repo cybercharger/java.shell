@@ -371,6 +371,6 @@ public class P4Test {
         Assert.assertEquals(des, data.getDescription());
 
         String[] bugs = new String[] {"[EADPCOMMERCEBUG-00000]", "[EADPCOMMERCEBUG-23456]","[GOPFR-00000]", "[GOPFR-00001]"};
-        Assert.assertArrayEquals(bugs, data.getBugs());
+        Assert.assertArrayEquals(bugs, data.getBugs().toArray(new String[0]));
     }
 }

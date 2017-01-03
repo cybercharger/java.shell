@@ -2,6 +2,7 @@ package com.ea.eadp.p4;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -35,7 +36,7 @@ public class P4ChangeListData {
     private final String user;
     private final String status;
     private final String description;
-    private final String[] bugs;
+    private final List<String> bugs;
 
     public int getChangelist() {
         return changelist;
@@ -61,7 +62,7 @@ public class P4ChangeListData {
         return description;
     }
 
-    public String[] getBugs() {
+    public List<String> getBugs() {
         return bugs;
     }
 
@@ -80,6 +81,6 @@ public class P4ChangeListData {
         Matcher jiraMatcher = jiraPattern.matcher(description);
         List<String> bugList = new LinkedList<>();
         while (jiraMatcher.find()) bugList.add(jiraMatcher.group());
-        bugs = bugList.toArray(new String[bugList.size()]);
+        bugs = Collections.unmodifiableList(bugList);
     }
 }
