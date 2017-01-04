@@ -1,6 +1,7 @@
 package com.ea.eadp.common;
 
 import com.ea.eadp.CommandRunner;
+import com.sun.org.apache.xalan.internal.xsltc.compiler.util.VoidType;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
@@ -9,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -27,11 +29,24 @@ public class P4SCmdRunner {
     private static final Pattern exitPattern = Pattern.compile(exitPatternString);
     private static final String[] P4S = new String[]{"p4", "-s"};
 
-    public static boolean run(String[] args,
-                              String input,
-                              String dir,
-                              Consumer<List<String>> onSucceeded,
-                              Consumer<List<String>> onFailed)
+    public static Void voidRun(String[] args,
+                           String input,
+                           String dir,
+                           Consumer<List<String>> onSucceeded,
+                           Consumer<List<String>> onFailed) throws InterruptedException, ExecutionException, IOException {
+        if (onSucceeded == null) throw new NullPointerException("onSucceeded");
+        return P4SCmdRunner.run(args, input, dir, c -> {
+            onSucceeded.accept(c);
+            return null;
+        }, onFailed);
+    }
+
+
+    public static <T> T run(String[] args,
+                            String input,
+                            String dir,
+                            Function<List<String>, T> onSucceeded,
+                            Consumer<List<String>> onFailed)
             throws InterruptedException, ExecutionException, IOException {
         if (args == null || args.length <= 0) throw new NullPointerException("args");
         if (onSucceeded == null) throw new NullPointerException("onSucceeded");
@@ -55,11 +70,11 @@ public class P4SCmdRunner {
             }
         });
         if (succeeded) {
-            onSucceeded.accept(output);
+            return onSucceeded.apply(output);
         } else if (onFailed != null) {
             onFailed.accept(output);
         }
-        return succeeded;
+        return null;
     }
 
     private static void throwUnexpectedError(String[] cmd, List<String> res) {

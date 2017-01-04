@@ -18,6 +18,7 @@
         <module>shell.cmd</module>
         <module>shell.exec</module>
         <module>version.control</module>
+        <module>jira.rest</module>
     </modules>
 
     <build>
@@ -61,13 +62,23 @@
             <dependency>
                 <groupId>com.ea.eadp</groupId>
                 <artifactId>shell.cmd</artifactId>
-                <version>com.ea.eadp.shell.version</version>
+                <version>${com.ea.eadp.shell.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>com.ea.eadp</groupId>
                 <artifactId>version.control</artifactId>
-                <version>com.ea.eadp.shell.version</version>
+                <version>${com.ea.eadp.shell.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.ea.eadp</groupId>
+                <artifactId>version.control</artifactId>
+                <version>${com.ea.eadp.shell.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.ea.eadp</groupId>
+                <artifactId>jira.rest</artifactId>
+                <version>${com.ea.eadp.shell.version}</version>
             </dependency>
             <!--External dependencies-->
             <dependency>

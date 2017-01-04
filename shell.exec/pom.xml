@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>shell.exec</artifactId>
-    <version>com.ea.eadp.shell.version</version>
+    <version>${com.ea.eadp.shell.version}</version>
     <name>shell.exec</name>
     <build>
         <plugins>
@@ -57,6 +57,14 @@
         <dependency>
             <groupId>com.ea.eadp</groupId>
             <artifactId>shell.cmd</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.ea.eadp</groupId>
+            <artifactId>version.control</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.ea.eadp</groupId>
+            <artifactId>jira.rest</artifactId>
         </dependency>
         <dependency>
             <groupId>log4j</groupId>

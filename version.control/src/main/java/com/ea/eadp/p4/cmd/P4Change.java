@@ -1,10 +1,16 @@
 package com.ea.eadp.p4.cmd;
 
 import com.ea.eadp.common.CmdRunner;
+import com.ea.eadp.common.P4SCmdRunner;
+import com.ea.eadp.common.Utils;
+import com.ea.eadp.common.VersionControlException;
+import com.ea.eadp.p4.P4ChangeListData;
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -14,6 +20,7 @@ import java.util.regex.Pattern;
 public class P4Change {
     private static final String[] CREATE_EMPTY_CL_CMD = new String[]{"p4 change -i"};
     private static final String[] GET_CL_FMT_CMD = new String[]{"p4 change -o"};
+    private static final String CHANGE_o_O_FMT = Utils.getArgFormat("change -o -O %s");
     private static final String changelistGroupId = "changelist";
     private static final Pattern pattern = Pattern.compile(String.format("Change (?<%s>\\d+) created\\.", changelistGroupId));
 
@@ -40,5 +47,15 @@ public class P4Change {
                     }
                     return matcher.group(changelistGroupId);
                 }, StringUtils.join(newSpec, "\n"));
+    }
+
+    public static P4ChangeListData getChangeListData(String changelist) throws InterruptedException, ExecutionException, IOException {
+        if (StringUtils.isBlank(changelist)) throw new NullPointerException("changelist");
+        String[] cmd = Utils.convertToArgArray(String.format(CHANGE_o_O_FMT, changelist));
+        return P4SCmdRunner.run(cmd, null, null, P4ChangeListData::new, P4Change::throwError);
+    }
+
+    private static void throwError(List<String> result) {
+        throw new VersionControlException(StringUtils.join(result, "\n"));
     }
 }

@@ -9,7 +9,7 @@
     </parent>
 
     <artifactId>shell.cmd</artifactId>
-    <version>com.ea.eadp.shell.version</version>
+    <version>${com.ea.eadp.shell.version}</version>
     <packaging>jar</packaging>
 
     <name>shell.cmd</name>

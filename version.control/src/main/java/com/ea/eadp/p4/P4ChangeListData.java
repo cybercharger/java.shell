@@ -28,7 +28,8 @@ public class P4ChangeListData {
             clId, dateId, clientId, userId, statusId, desId);
     private static final Pattern pattern = Pattern.compile(regExFmt);
 
-    private static Pattern jiraPattern = Pattern.compile("\\[((?:EADPCOMMERCEBUG|GOPFR)-\\d+)\\]");
+    private static final String bugId = "bug";
+    private static Pattern jiraPattern = Pattern.compile(String.format("\\[(?<%s>(?:EADPCOMMERCEBUGS|GOPFR)-\\d+)\\]", bugId));
 
     private final int changelist;
     private final String date;
@@ -78,9 +79,9 @@ public class P4ChangeListData {
         status = matcher.group(statusId);
         description = matcher.group(desId);
 
-        Matcher jiraMatcher = jiraPattern.matcher(description);
+        Matcher jiraMatcher = jiraPattern.matcher(description.toUpperCase());
         List<String> bugList = new LinkedList<>();
-        while (jiraMatcher.find()) bugList.add(jiraMatcher.group());
+        while (jiraMatcher.find()) bugList.add(jiraMatcher.group(bugId));
         bugs = Collections.unmodifiableList(bugList);
     }
 }

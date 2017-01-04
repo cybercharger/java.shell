@@ -9,12 +9,13 @@
 
     <artifactId>version.control</artifactId>
     <packaging>jar</packaging>
-    <version>com.ea.eadp.shell.version</version>
+    <version>${com.ea.eadp.shell.version}</version>
 
     <name>version.control</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <com.ea.eadp.shell.version>1.0.0-SNAPSHOT</com.ea.eadp.shell.version>
     </properties>
 
     <build>

@@ -295,37 +295,37 @@ public class P4Test {
                 "\tsome more new lines #2\n";
 
         final String[] cmd = new String[]{"-Ztag", "change", "-i"};
-        P4SCmdRunner.run(cmd, input, null,
-                (res) -> logger.info("STDOUT:\n" + StringUtils.join(res, "\n")),
-                (err) -> logger.error(String.format("Failed on %1$s %2$s, error:\n%3$s", StringUtils.join(cmd, " "), input, StringUtils.join(err, "\n"))));
+        P4SCmdRunner.voidRun(cmd, input, null,
+                r -> logger.info("STDOUT:\n" + StringUtils.join(r, "\n")),
+                e -> logger.error(String.format("Failed on %1$s %2$s, error:\n%3$s", StringUtils.join(cmd, " "), input, StringUtils.join(e, "\n"))));
     }
 
     //    @Test
     public void testP4Login() throws InterruptedException, ExecutionException, IOException {
         String input = "User@123";
-        P4SCmdRunner.run(new String[]{"-ZTag", "login"}, input, null,
-                res -> logger.info("STDOUT:\n" + StringUtils.join(res, "\n")),
-                err -> logger.error("STDERR:\n" + StringUtils.join(err, "\n")));
+        P4SCmdRunner.voidRun(new String[]{"-ZTag", "login"}, input, null,
+                r -> logger.info("STDOUT:\n" + StringUtils.join(r, "\n")),
+                e -> logger.error("STDERR:\n" + StringUtils.join(e, "\n")));
     }
 
 
     //    @Test
     public void testP4LoginS() throws InterruptedException, ExecutionException, IOException {
-        P4SCmdRunner.run(new String[]{"login", "-s"}, null, null,
+        P4SCmdRunner.voidRun(new String[]{"login", "-s"}, null, null,
                 c -> logger.info("S: " + StringUtils.join(c, "\n")),
                 e -> logger.error("F: " + StringUtils.join(e, "\n")));
     }
 
     //    @Test
     public void testP4Logout() throws InterruptedException, ExecutionException, IOException {
-        P4SCmdRunner.run(new String[]{"logout"}, null, null,
+        P4SCmdRunner.voidRun(new String[]{"logout"}, null, null,
                 c -> logger.info("S: " + StringUtils.join(c, "\n")),
                 e -> logger.error("F: " + StringUtils.join(e, "\n")));
     }
 
     //    @Test
     public void testP4Submit() throws InterruptedException, ExecutionException, IOException {
-        boolean res = P4SCmdRunner.run(new String[]{"-ZTag", "submit", "-c", "319189"}, null, null,
+        P4SCmdRunner.voidRun(new String[]{"-ZTag", "submit", "-c", "319189"}, null, null,
                 c -> logger.info("S: " + StringUtils.join(c, "\n")),
                 e -> logger.error("F: " + StringUtils.join(e, "\n")));
     }
@@ -336,7 +336,7 @@ public class P4Test {
                 "desc line 1\n" +
                 "desc line 2\n" +
                 "desc line 3\n" +
-                "Bug fixing for [EADPCOMMERCEBUG-00000], [EADPCOMMERCEBUG-23456]\n" +
+                "Bug fixing for [EADPCOMMERCEBUGS-00000], [EADPCOMMERCEBUGS-23456]\n" +
                 "GOPFRs are : 1) [GOPFR-00000], 2) [GOPFR-00001]\n" +
                 "Type public";
         String output = "" +
@@ -370,7 +370,7 @@ public class P4Test {
         Assert.assertEquals("pending", data.getStatus());
         Assert.assertEquals(des, data.getDescription());
 
-        String[] bugs = new String[] {"[EADPCOMMERCEBUG-00000]", "[EADPCOMMERCEBUG-23456]","[GOPFR-00000]", "[GOPFR-00001]"};
+        String[] bugs = new String[] {"EADPCOMMERCEBUGS-00000", "EADPCOMMERCEBUGS-23456","GOPFR-00000", "GOPFR-00001"};
         Assert.assertArrayEquals(bugs, data.getBugs().toArray(new String[0]));
     }
 }
